@@ -7,4 +7,5 @@ services:
       - ./API Test.postman_collection.json:/etc/newman/collection.json
       - ./API Test.postman_environment.json:/etc/newman/environment.json
       - ./data.json:/etc/newman/data.json
-    command: run /etc/newman/collection.json -e /etc/newman/environment.json --iteration-data /etc/newman/data.json
+      - ./report:/etc/newman/report
+    entrypoint: /bin/sh -c "npm install -g newman-reporter-json newman-reporter-html && newman run /etc/newman/collection.json -e /etc/newman/environment.json --iteration-data /etc/newman/data.json --reporters cli,html,json --reporter-html-export /etc/newman/report/report.html --reporter-json-export /etc/newman/report/report.json"
