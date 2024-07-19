@@ -1,0 +1,298 @@
+{
+	"info": {
+		"_postman_id": "8c3a3e0a-430a-4bf3-a24d-e91ff82ab815",
+		"name": "API Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37086388"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is array\", () => {\r",
+									"    let jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.be.an('array');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}",
+							"host": [
+								"{{endpoint}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let user = {\r",
+									"    firstname: pm.iterationData.get(\"firstname\"),\r",
+									"    lastname: pm.iterationData.get(\"lastname\"),\r",
+									"    gender: pm.iterationData.get(\"gender\"),\r",
+									"    birthday: pm.iterationData.get(\"birthday\"),\r",
+									"    jobtitle: pm.iterationData.get(\"jobtitle\")\r",
+									"};\r",
+									"pm.environment.set(\"newUser\", JSON.stringify(user));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has ID\", function () {\r",
+									"    let jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('id');\r",
+									"    pm.environment.set(\"userId\", jsonData.id);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{newUser}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}",
+							"host": [
+								"{{endpoint}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is an json\", function () {\r",
+									"    pm.expect(jsonData).to.be.an('object');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains user data\", function () {\r",
+									"    pm.expect(jsonData).to.have.property('firstname');\r",
+									"    pm.expect(jsonData).to.have.property('lastname');\r",
+									"    pm.expect(jsonData).to.have.property('gender');\r",
+									"    pm.expect(jsonData).to.have.property('birthday');\r",
+									"    pm.expect(jsonData).to.have.property('jobtitle');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}/{{userId}}",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains updated user data\", function () {\r",
+									"    let jsonData = pm.response.json();\r",
+									"    let updatedUser = JSON.parse(pm.environment.get(\"updatedUser\"));\r",
+									"    pm.expect(jsonData.firstname).to.equal(updatedUser.firstname);\r",
+									"    pm.expect(jsonData.lastname).to.equal(updatedUser.lastname);\r",
+									"    pm.expect(jsonData.gender).to.equal(updatedUser.gender);\r",
+									"    pm.expect(jsonData.birthday).to.equal(updatedUser.birthday);\r",
+									"    pm.expect(jsonData.jobtitle).to.equal(updatedUser.jobtitle);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let data = JSON.parse(pm.environment.get(\"newUser\"));\r",
+									"let user = {\r",
+									"    firstname: data.firstname + \"_updated_\",\r",
+									"    lastname:  data.lastname + \"_updated_\",\r",
+									"    gender:  data.gender + \"_updated_\",\r",
+									"    birthday: data.birthday,\r",
+									"    jobtitle:  data.jobtitle + \"_updated_\"\r",
+									"};\r",
+									"pm.environment.set(\"updatedUser\", JSON.stringify(user));\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{updatedUser}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{endpoint}}/{{userId}}",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains success message\", function () {\r",
+									"    let jsonData = pm.response.json();\r",
+									"    let updatedUser = JSON.parse(pm.environment.get(\"updatedUser\"));\r",
+									"    pm.expect(jsonData.firstname).to.equal(updatedUser.firstname);\r",
+									"    pm.expect(jsonData.lastname).to.equal(updatedUser.lastname);\r",
+									"    pm.expect(jsonData.gender).to.equal(updatedUser.gender);\r",
+									"    pm.expect(jsonData.birthday).to.equal(updatedUser.birthday);\r",
+									"    pm.expect(jsonData.jobtitle).to.equal(updatedUser.jobtitle);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}/{{userId}}",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

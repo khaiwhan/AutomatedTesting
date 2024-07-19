@@ -1,0 +1,10 @@
+version: '3.7'
+
+services:
+  newman:
+    image: postman/newman
+    volumes:
+      - ./API Test.postman_collection.json:/etc/newman/collection.json
+      - ./API Test.postman_environment.json:/etc/newman/environment.json
+      - ./data.json:/etc/newman/data.json
+    command: run /etc/newman/collection.json -e /etc/newman/environment.json --iteration-data /etc/newman/data.json
