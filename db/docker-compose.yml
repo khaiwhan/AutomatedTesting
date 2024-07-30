@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:12.19-bullseye
+    container_name: db
+    environment:
+      POSTGRES_PASSWORD: p@ssw0rd
+    volumes:
+      - ./initial-script:/docker-entrypoint-initdb.d
+      - ./data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
