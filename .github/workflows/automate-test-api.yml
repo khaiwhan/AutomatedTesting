@@ -32,4 +32,11 @@ jobs:
       working-directory: ./api-test
       run: |
         echo "Running API Test script..."
-        docker-compose up
+        docker-compose up --abort-on-container-exit --exit-code-from newman
+      continue-on-error: false
+
+    - name: Tear down
+      if: always()
+      working-directory: ./api-test
+      run: |
+        docker-compose down
