@@ -32,4 +32,4 @@ jobs:
       working-directory: ./api-test
       run: |
         echo "Running API Test script..."
-        docker-compose up -d
+        docker-compose up
