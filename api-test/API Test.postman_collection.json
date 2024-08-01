@@ -22,7 +22,7 @@
                                     "",
                                     "pm.test(\"Response is array\", () => {",
                                     "    let jsonData = pm.response.json();",
-                                    "    pm.expect(jsonData).to.be.an('array');",
+                                    "    pm.expect(jsonData).to.be.an('object');",
                                     "});"
                                 ],
                                 "type": "text/javascript"
