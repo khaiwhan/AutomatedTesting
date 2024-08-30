@@ -1,0 +1,21 @@
+version: '3.7'
+
+services:
+  newman:
+    image: postman/newman
+    volumes:
+      - ./api-test/API Test.postman_collection.json:/etc/newman/collection.json
+      - ./api-test/API Test.postman_environment.json:/etc/newman/environment.json
+      - ./api-test/data.json:/etc/newman/data.json
+      - ./api-test/report:/etc/newman/report
+    entrypoint: /bin/sh -c "npm install -g newman-reporter-json newman-reporter-html && newman run /etc/newman/collection.json -e /etc/newman/environment.json --iteration-data /etc/newman/data.json --reporters cli,html,json --reporter-html-export /etc/newman/report/report.html --reporter-json-export /etc/newman/report/report.json"
+
+  cypress:
+    image: cypress/included
+    depends_on:
+      - newman
+    volumes:
+      - ./ui-test:/e2e
+      - ./ui-test/report:/e2e/report
+    working_dir: /e2e
+    entrypoint: /bin/sh -c "npm install mochawesome && cypress run --spec 'cypress/e2e/crud.cy.js' --browser edge --reporter mochawesome --reporter-options reportDir=/e2e/report,overwrite=true,html=true,json=true"

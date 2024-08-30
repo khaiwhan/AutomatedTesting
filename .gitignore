@@ -1,7 +1,3 @@
 api-test/report
-api/.vs
-api/bin
-api/obj
-web/node_modules
-web/.angular
-db/data
+ui-test/report
+ui-test/node_modules

@@ -7,10 +7,10 @@
     },
     "item": [
         {
-            "name": "User",
+            "name": "Item",
             "item": [
                 {
-                    "name": "Users",
+                    "name": "Items",
                     "event": [
                         {
                             "listen": "test",
@@ -47,20 +47,18 @@
                     "response": []
                 },
                 {
-                    "name": "User",
+                    "name": "Item",
                     "event": [
                         {
                             "listen": "prerequest",
                             "script": {
                                 "exec": [
-                                    "let newUser = {",
-                                    "    firstname: pm.iterationData.get(\"firstname\"),",
-                                    "    lastname: pm.iterationData.get(\"lastname\"),",
-                                    "    gender: pm.iterationData.get(\"gender\"),",
-                                    "    birthday: pm.iterationData.get(\"birthday\"),",
-                                    "    jobtitle: pm.iterationData.get(\"jobtitle\")",
+                                    "let item = {",
+                                    "    code: pm.iterationData.get(\"code\"),",
+                                    "    description: pm.iterationData.get(\"description\"),",
+                                    "    active: pm.iterationData.get(\"active\"),",
                                     "};",
-                                    "pm.environment.set(\"newUser\", JSON.stringify(newUser));"
+                                    "pm.environment.set(\"newitem\", JSON.stringify(item));"
                                 ],
                                 "type": "text/javascript"
                             }
@@ -76,7 +74,7 @@
                                     "pm.test(\"Response has ID\", function () {",
                                     "    let jsonData = pm.response.json();",
                                     "    pm.expect(jsonData).to.have.property('id');",
-                                    "    pm.environment.set(\"userId\", jsonData.id);",
+                                    "    pm.environment.set(\"itemid\", jsonData.id);",
                                     "});"
                                 ],
                                 "type": "text/javascript"
@@ -88,7 +86,7 @@
                         "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{{newUser}}",
+                            "raw": "{{newitem}}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -103,7 +101,7 @@
                     "response": []
                 },
                 {
-                    "name": "User",
+                    "name": "Item",
                     "event": [
                         {
                             "listen": "test",
@@ -120,11 +118,9 @@
                                     "});",
                                     "",
                                     "pm.test(\"Response contains user data\", function () {",
-                                    "    pm.expect(jsonData).to.have.property('firstname');",
-                                    "    pm.expect(jsonData).to.have.property('lastname');",
-                                    "    pm.expect(jsonData).to.have.property('gender');",
-                                    "    pm.expect(jsonData).to.have.property('birthday');",
-                                    "    pm.expect(jsonData).to.have.property('jobtitle');",
+                                    "    pm.expect(jsonData).to.have.property('code');",
+                                    "    pm.expect(jsonData).to.have.property('description');",
+                                    "    pm.expect(jsonData).to.have.property('active');",
                                     "});"
                                 ],
                                 "type": "text/javascript"
@@ -142,15 +138,15 @@
                         "method": "GET",
                         "header": [],
                         "url": {
-                            "raw": "{{endpoint}}/{{userId}}",
+                            "raw": "{{endpoint}}/{{itemid}}",
                             "host": ["{{endpoint}}"],
-                            "path": ["{{userId}}"]
+                            "path": ["{{itemid}}"]
                         }
                     },
                     "response": []
                 },
                 {
-                    "name": "User",
+                    "name": "Item",
                     "event": [
                         {
                             "listen": "test",
@@ -162,12 +158,10 @@
                                     "",
                                     "pm.test(\"Response contains updated user data\", function () {",
                                     "    let jsonData = pm.response.json();",
-                                    "    let updatedUser = JSON.parse(pm.environment.get(\"updatedUser\"));",
-                                    "    pm.expect(jsonData.firstname).to.equal(updatedUser.firstname);",
-                                    "    pm.expect(jsonData.lastname).to.equal(updatedUser.lastname);",
-                                    "    pm.expect(jsonData.gender).to.equal(updatedUser.gender);",
-                                    "    pm.expect(jsonData.birthday).to.equal(updatedUser.birthday);",
-                                    "    pm.expect(jsonData.jobtitle).to.equal(updatedUser.jobtitle);",
+                                    "    let updateitem = JSON.parse(pm.environment.get(\"updateitem\"));",
+                                    "    pm.expect(jsonData.code).to.equal(updateitem.code);",
+                                    "    pm.expect(jsonData.description).to.equal(updateitem.description);",
+                                    "    pm.expect(jsonData.active).to.equal(updateitem.active);",
                                     "});"
                                 ],
                                 "type": "text/javascript"
@@ -177,15 +171,13 @@
                             "listen": "prerequest",
                             "script": {
                                 "exec": [
-                                    "let originalUser = JSON.parse(pm.environment.get(\"newUser\"));",
-                                    "let updatedUser = {",
-                                    "    firstname: originalUser.firstname + \"_updated\",",
-                                    "    lastname: originalUser.lastname + \"_updated\",",
-                                    "    gender: originalUser.gender + \"_updated\",",
-                                    "    birthday: originalUser.birthday,",
-                                    "    jobtitle: originalUser.jobtitle + \"_updated\"",
+                                    "let originalUser = JSON.parse(pm.environment.get(\"newitem\"));",
+                                    "let updateitem = {",
+                                    "    code: originalUser.code + \"_updated\",",
+                                    "    description: originalUser.description + \"_updated\",",
+                                    "    active: !originalUser.active,",
                                     "};",
-                                    "pm.environment.set(\"updatedUser\", JSON.stringify(updatedUser));"
+                                    "pm.environment.set(\"updateitem\", JSON.stringify(updateitem));"
                                 ],
                                 "type": "text/javascript"
                             }
@@ -196,7 +188,7 @@
                         "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{{updatedUser}}",
+                            "raw": "{{updateitem}}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -204,15 +196,15 @@
                             }
                         },
                         "url": {
-                            "raw": "{{endpoint}}/{{userId}}",
+                            "raw": "{{endpoint}}/{{itemid}}",
                             "host": ["{{endpoint}}"],
-                            "path": ["{{userId}}"]
+                            "path": ["{{itemid}}"]
                         }
                     },
                     "response": []
                 },
                 {
-                    "name": "User",
+                    "name": "Item",
                     "event": [
                         {
                             "listen": "test",
@@ -224,12 +216,10 @@
                                     "",
                                     "pm.test(\"Response contains success message\", function () {",
                                     "    let jsonData = pm.response.json();",
-                                    "    let updatedUser = JSON.parse(pm.environment.get(\"updatedUser\"));",
-                                    "    pm.expect(jsonData.firstname).to.equal(updatedUser.firstname);",
-                                    "    pm.expect(jsonData.lastname).to.equal(updatedUser.lastname);",
-                                    "    pm.expect(jsonData.gender).to.equal(updatedUser.gender);",
-                                    "    pm.expect(jsonData.birthday).to.equal(updatedUser.birthday);",
-                                    "    pm.expect(jsonData.jobtitle).to.equal(updatedUser.jobtitle);",
+                                    "    let updateitem = JSON.parse(pm.environment.get(\"updateitem\"));",
+                                    "    pm.expect(jsonData.code).to.equal(updateitem.code);",
+                                    "    pm.expect(jsonData.decription).to.equal(updateitem.decription);",
+                                    "    pm.expect(jsonData.active).to.equal(updateitem.active);",
                                     "});"
                                 ],
                                 "type": "text/javascript"
@@ -247,9 +237,9 @@
                         "method": "DELETE",
                         "header": [],
                         "url": {
-                            "raw": "{{endpoint}}/{{userId}}",
+                            "raw": "{{endpoint}}/{{itemid}}",
                             "host": ["{{endpoint}}"],
-                            "path": ["{{userId}}"]
+                            "path": ["{{itemid}}"]
                         }
                     },
                     "response": []
