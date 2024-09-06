@@ -1,3 +1,5 @@
 api-test/report
 ui-test/report
 ui-test/node_modules
+ui-test/cypress/screenshots
+load-test/report

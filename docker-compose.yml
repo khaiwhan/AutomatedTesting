@@ -18,4 +18,14 @@ services:
       - ./ui-test:/e2e
       - ./ui-test/report:/e2e/report
     working_dir: /e2e
-    entrypoint: /bin/sh -c "npm install mochawesome && cypress run --spec 'cypress/e2e/crud.cy.js' --browser edge --reporter mochawesome --reporter-options reportDir=/e2e/report,overwrite=true,html=true,json=true"
+    entrypoint: /bin/sh -c "sleep 60 && npm install mochawesome && cypress run --spec 'cypress/e2e/crud.cy.js' --browser edge --reporter mochawesome --reporter-options reportDir=/e2e/report,overwrite=true,html=true,json=true"
+
+  k6:
+    image: grafana/k6
+    depends_on:
+      - cypress
+      - newman
+    volumes:
+      - ./load-test/test.js:/scripts/test.js
+      - ./load-test/report:/results
+    entrypoint: /bin/sh -c "sleep 120 && k6 run /scripts/test.js --summary-export=/results/summary.json"
