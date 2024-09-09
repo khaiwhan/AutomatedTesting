@@ -20,6 +20,8 @@ services:
     environment:
       - WEB_URL=${WEB_URL}
     entrypoint: /bin/sh -c "npm install mochawesome && cypress run --spec 'cypress/e2e/crud.cy.js' --browser edge --reporter mochawesome --reporter-options reportDir=/e2e/report,overwrite=true,html=true,json=true"
+    networks:
+      - web
 
   k6:
     image: grafana/k6
@@ -29,3 +31,7 @@ services:
     environment:
       - API_URL=${API_URL}
     entrypoint: /bin/sh -c "k6 run /scripts/test.js --summary-export=/results/summary.json"
+
+networks:
+  web:
+    external: true
