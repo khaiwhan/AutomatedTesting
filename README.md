@@ -1,4 +1,4 @@
-# Run Project
+# Run Project 💻
 
 ```
 docker-compose run --rm -e API_URL=value newman && \
