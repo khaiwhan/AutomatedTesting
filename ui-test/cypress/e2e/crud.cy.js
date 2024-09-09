@@ -1,8 +1,9 @@
 /// <reference types="cypress" />
+const baseUrl = Cypress.env('WEB_URL');
 
 describe("Visit Web", () => {
     beforeEach(() => {
-        cy.visit("https://angular-nes-css.vercel.app/")
+        cy.visit(baseUrl)
     })
 
     it("display web angular nes css", () => {

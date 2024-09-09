@@ -1,0 +1,2 @@
+npm install -g newman-reporter-json newman-reporter-html
+newman run /etc/newman/collection.json --env-var endpoint=${API_URL} -e /etc/newman/environment.json --iteration-data /etc/newman/data.json --reporters cli,html,json --reporter-html-export /etc/newman/report/report.html --reporter-json-export /etc/newman/report/report.json

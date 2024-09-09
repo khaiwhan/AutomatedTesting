@@ -1,11 +1,7 @@
-# AutomatedTesting
+# Run Project
 
-# API Test
-### goto directory api-test
-### run "docker-compose up --build" in api-test directory.
-
-
-# Workflow Test
-### goto branch develop and change something
-### commit and pull request to branch main
-### see detail in check action
+```
+docker-compose run --rm -e API_URL=value newman && \
+docker-compose run --rm -e WEB_URL=value cypress && \
+docker-compose run --rm -e API_URL=value k6 
+```

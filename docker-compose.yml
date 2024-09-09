@@ -8,24 +8,24 @@ services:
       - ./api-test/API Test.postman_environment.json:/etc/newman/environment.json
       - ./api-test/data.json:/etc/newman/data.json
       - ./api-test/report:/etc/newman/report
-    entrypoint: /bin/sh -c "npm install -g newman-reporter-json newman-reporter-html && newman run /etc/newman/collection.json -e /etc/newman/environment.json --iteration-data /etc/newman/data.json --reporters cli,html,json --reporter-html-export /etc/newman/report/report.html --reporter-json-export /etc/newman/report/report.json"
+      - ./api-test/entrypoint.sh:/entrypoint.sh
+    entrypoint: /bin/sh /entrypoint.sh
 
   cypress:
     image: cypress/included
-    depends_on:
-      - newman
     volumes:
       - ./ui-test:/e2e
       - ./ui-test/report:/e2e/report
     working_dir: /e2e
-    entrypoint: /bin/sh -c "sleep 60 && npm install mochawesome && cypress run --spec 'cypress/e2e/crud.cy.js' --browser edge --reporter mochawesome --reporter-options reportDir=/e2e/report,overwrite=true,html=true,json=true"
+    environment:
+      - WEB_URL=${WEB_URL}
+    entrypoint: /bin/sh -c "npm install mochawesome && cypress run --spec 'cypress/e2e/crud.cy.js' --browser edge --reporter mochawesome --reporter-options reportDir=/e2e/report,overwrite=true,html=true,json=true"
 
   k6:
     image: grafana/k6
-    depends_on:
-      - cypress
-      - newman
     volumes:
       - ./load-test/test.js:/scripts/test.js
       - ./load-test/report:/results
-    entrypoint: /bin/sh -c "sleep 180 && k6 run /scripts/test.js --summary-export=/results/summary.json"
+    environment:
+      - API_URL=${API_URL}
+    entrypoint: /bin/sh -c "k6 run /scripts/test.js --summary-export=/results/summary.json"
