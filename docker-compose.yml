@@ -28,4 +28,4 @@ services:
     volumes:
       - ./load-test/test.js:/scripts/test.js
       - ./load-test/report:/results
-    entrypoint: /bin/sh -c "sleep 120 && k6 run /scripts/test.js --summary-export=/results/summary.json"
+    entrypoint: /bin/sh -c "sleep 180 && k6 run /scripts/test.js --summary-export=/results/summary.json"
